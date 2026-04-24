@@ -7,17 +7,25 @@ EXPOSE 8080
 
 # TODO
 # Create a stage named "restore" based on the .NET 8 SDK image.
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS restore
 # In that stage:
 # 1. Set the working directory to /src
+WORKDIR /src
 # 2. Copy only TaskHub.csproj
+COPY TaskHub.csproj ./
 # 3. Run "dotnet restore" for TaskHub.csproj
+RUN dotnet restore TaskHub.csproj
 
 # TODO
 # Create a stage named "build" that starts FROM the "restore" stage.
+FROM restore AS build
 # In that stage:
 # 1. Copy the rest of the project files
+COPY . .
 # 2. Run "dotnet build" in Release mode
+RUN dotnet build TaskHub.csproj -c Release
 # 3. Use --no-restore because restore was already done earlier
+
 
 FROM build AS migrations
 RUN dotnet tool install --global dotnet-ef --version 8.0.13
@@ -26,11 +34,13 @@ ENTRYPOINT ["dotnet", "ef", "database", "update", "--project", "TaskHub.csproj",
 
 # TODO
 # Create a stage named "publish" that starts FROM the "build" stage.
+FROM build AS publish
 # In that stage:
 # 1. Run "dotnet publish" in Release mode
 # 2. Publish the output to /app/publish
 # 3. Use --no-build because the project was already built earlier
 # 4. Disable the app host by using /p:UseAppHost=false
+RUN dotnet publish TaskHub.csproj -c Release -o /app/publish --no-build /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
