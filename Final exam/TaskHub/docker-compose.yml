@@ -58,7 +58,7 @@ services:
 
     # TODO:
     # Add an image name for the app container.
-    image: taskhub:v2
+    image: taskhub
 
     # TODO:
     # Add a container name for the app service.
