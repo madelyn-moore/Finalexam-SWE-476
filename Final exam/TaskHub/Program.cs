@@ -12,6 +12,7 @@ using TaskHub.Data;
 using TaskHub.Models;
 using TaskHub.Options;
 using TaskHub.Services;
+using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,14 +21,14 @@ var builder = WebApplication.CreateBuilder(args);
 // from Azure Key Vault instead of storing them locally.
 // ============================================================
 
-/*
+
 builder.Configuration.AddAzureKeyVault(
     new Uri($"https://{builder.Configuration["KeyVaultName"]}.vault.azure.net/"),
     new DefaultAzureCredential(new DefaultAzureCredentialOptions
     {
         ManagedIdentityClientId = builder.Configuration["ManagedIdentityClientId"]
     }));
-*/
+
 
 // ============================================================
 // CONNECTION STRING
